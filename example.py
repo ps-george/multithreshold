@@ -57,10 +57,9 @@ def main():
     def show_thresholds(src_img, dst_img, thresholds):
         colors = [(255, 0, 0), (255, 128, 0), (255, 255, 0), (0, 128, 0), (0, 204, 102),
                   (51, 255, 255), (0, 128, 255), (0, 0, 255), (128, 0, 255), (255, 0, 255), (255, 0, 127)]
-        for i, t in enumerate(sorted(thresholds)):
-            retval, mask = cv2.threshold(src_img, t, 255, cv2.THRESH_BINARY)
-            mask_ind = (mask > 0)
-            dst_img[mask_ind] = colors[i]
+        masks = otsu.multithreshold(src_img, thresholds)
+        for i, mask in enumerate(masks):
+            dst_img[mask] = colors[i]
         return dst_img
 
     show_thresholds(img, img_auto, thresholds)
