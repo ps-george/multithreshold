@@ -37,7 +37,12 @@ def otsu_method(hist):
         if inter_class_variance > maximum:
             optimum_value = t
             maximum = inter_class_variance
-    return optimum_value
+    return optimum_value, maximum
+
+
+def otsu(hist):
+    pos, val = otsu_method
+    return pos
 
 
 def normalised_histogram_binning(hist, M=32, L=256):
@@ -54,31 +59,33 @@ def normalised_histogram_binning(hist, M=32, L=256):
 
 
 def find_valleys(H):
-        """Valley estimation on *H*, H should be normalised-binned-grouped histogram."""
-        hsize = H.shape[0]
-        probs = np.zeros((hsize, 1), dtype=int)
-        for i in range(1, hsize-1):
-            if H[i] > H[i-1] or H[i] > H[i+1]:
-                probs[i] = 0
-            elif H[i] < H[i-1] and H[i] == H[i+1]:
-                probs[i] = 1
-            elif H[i] == H[i-1] and H[i] < H[i+1]:
-                probs[i] = 3
-            elif H[i] < H[i-1] and H[i] < H[i+1]:
-                probs[i] = 4
-            elif H[i] == H[i-1] and H[i] == H[i+1]:
-                probs[i] = probs[i-1]
-
-        # vals = []
-        for i in range(1, hsize-1):
-            if probs[i] != 0:
-                # floor devision. if > 4 = 1, else 0
-                probs[i] = (probs[i-1] + probs[i] + probs[i+1]) // 4
-
-                # vals.append((probs[i-1] + probs[i] + probs[i+1]) // 4)
-        # print(sorted(vals)[:-10])
-        valleys = [i for i, x in enumerate(probs) if x > 0]
-        return valleys
+    """Valley estimation on *H*, H should be normalised-binned-grouped histogram."""
+    hsize = H.shape[0]
+    probs = np.zeros((hsize, 1), dtype=int)
+    costs = np.zeros((hsize, 1), dtype=float)
+    for i in range(1, hsize-1):
+        if H[i] > H[i-1] or H[i] > H[i+1]:
+            probs[i] = 0
+        elif H[i] < H[i-1] and H[i] == H[i+1]:
+            probs[i] = 1
+            costs[i] = H[i-1] - H[i]
+        elif H[i] == H[i-1] and H[i] < H[i+1]:
+            probs[i] = 3
+            costs[i] = H[i+1] - H[i]
+        elif H[i] < H[i-1] and H[i] < H[i+1]:
+            probs[i] = 4
+            costs[i] = (H[i-1] + H[i+1]) - 2*H[i]
+        elif H[i] == H[i-1] and H[i] == H[i+1]:
+            probs[i] = probs[i-1]
+            costs[i] = probs[i-1]
+    for i in range(1, hsize-1):
+        if probs[i] != 0:
+            # floor devision. if > 4 = 1, else 0
+            probs[i] = (probs[i-1] + probs[i] + probs[i+1]) // 4
+    valleys = [i for i, x in enumerate(probs) if x > 0]
+    # if maximum is not None and maximum < len(valleys):
+    # valleys = sorted(valleys, key=lambda x: costs[x])[0:maximum]
+    return valleys
 
 
 def valley_estimation(hist, M=32, L=256):
@@ -89,19 +96,24 @@ def valley_estimation(hist, M=32, L=256):
     return valleys
 
 
-def threshold_valley_regions(hist, valleys, N):
+def threshold_valley_regions(hist, valleys, N, maximum=None):
     """Perform Otsu's method over estimated valley regions."""
     thresholds = []
     for valley in valleys:
         start_pos = (valley * N) - N
         end_pos = (valley + 2) * N
         h = hist[start_pos:end_pos]
-        sub_threshold = otsu_method(h)
-        thresholds.append(start_pos + sub_threshold)
+        sub_threshold, val = otsu_method(h)
+        thresholds.append((start_pos + sub_threshold, val))
+    thresholds.sort(key=lambda x: x[1], reverse=True)
+    thresholds, values = [list(t) for t in zip(*thresholds)]
+    if maximum is not None and maximum < len(thresholds):
+        thresholds = thresholds[0:maximum]
+    print('Thresholds: {}'.format(thresholds))
     return thresholds
 
 
-def modified_TSMO(hist, M=32, L=256):
+def modified_TSMO(hist, M=32, L=256, maximum=None):
     """Modified Two-Stage Multithreshold Otsu Method.
 
     Implemented based on description in:
@@ -112,5 +124,5 @@ def modified_TSMO(hist, M=32, L=256):
 
     N = L // M
     valleys = valley_estimation(hist, M, L)
-    thresholds = threshold_valley_regions(hist, valleys, N)
+    thresholds = threshold_valley_regions(hist, valleys, N, maximum=7)
     return thresholds
