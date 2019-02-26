@@ -96,7 +96,7 @@ def valley_estimation(hist, M=32, L=256):
     return valleys
 
 
-def threshold_valley_regions(hist, valleys, N, maximum=None):
+def threshold_valley_regions(hist, valleys, N):
     """Perform Otsu's method over estimated valley regions."""
     thresholds = []
     for valley in valleys:
@@ -107,13 +107,10 @@ def threshold_valley_regions(hist, valleys, N, maximum=None):
         thresholds.append((start_pos + sub_threshold, val))
     thresholds.sort(key=lambda x: x[1], reverse=True)
     thresholds, values = [list(t) for t in zip(*thresholds)]
-    if maximum is not None and maximum < len(thresholds):
-        thresholds = thresholds[0:maximum]
-    print('Thresholds: {}'.format(thresholds))
     return thresholds
 
 
-def modified_TSMO(hist, M=32, L=256, maximum=None):
+def modified_TSMO(hist, M=32, L=256):
     """Modified Two-Stage Multithreshold Otsu Method.
 
     Implemented based on description in:
@@ -124,5 +121,5 @@ def modified_TSMO(hist, M=32, L=256, maximum=None):
 
     N = L // M
     valleys = valley_estimation(hist, M, L)
-    thresholds = threshold_valley_regions(hist, valleys, N, maximum=7)
+    thresholds = threshold_valley_regions(hist, valleys, N)
     return thresholds
