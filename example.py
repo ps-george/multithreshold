@@ -11,14 +11,9 @@ def main():
     N = L // M
     # Load original image
     img = cv2.imread('data/soil.jpg', 0)  # read image in as grayscale
-    # plt.figure()
-    # plt.imshow(img, cmap='gray')
 
     # Blur image
     img = cv2.GaussianBlur(img, (7, 7), 0)
-    img = cv2.GaussianBlur(img, (7, 7), 0)
-    # plt.figure()
-    # plt.imshow(img, cmap='gray')
 
     # Calculate histogram
     hist = cv2.calcHist(
