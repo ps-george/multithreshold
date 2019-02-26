@@ -52,7 +52,7 @@ def main():
     # Illustrate thresholds
     img_3 = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
     img_auto = img_3.copy()
-    img_5 = img_3.copy()
+    img_1 = img_3.copy()
 
     def show_thresholds(src_img, dst_img, thresholds):
         colors = [(255, 0, 0), (255, 128, 0), (255, 255, 0), (0, 128, 0), (0, 204, 102),
@@ -64,7 +64,7 @@ def main():
 
     show_thresholds(img, img_auto, thresholds)
     show_thresholds(img, img_3, thresholds[0:3])
-    show_thresholds(img, img_5, thresholds[0:5])
+    show_thresholds(img, img_1, [thresholds[0]])
 
     plt.figure()
     ax = plt.subplot(2, 2, 1)
@@ -77,8 +77,8 @@ def main():
     ax.set_title('3 levels')
     plt.imshow(img_3)
     ax = plt.subplot(2, 2, 4)
-    ax.set_title('5 levels')
-    plt.imshow(img_5)
+    ax.set_title('1 level')
+    plt.imshow(img_1)
     plt.show()
 
 
