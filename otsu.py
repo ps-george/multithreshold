@@ -1,6 +1,17 @@
 import numpy as np
 
 
+def multithreshold(img, thresholds):
+    """Multithreshold a single-channel image. Returns boolean mask indices."""
+    masks = np.zeros((len(thresholds) + 1, img.shape[0], img.shape[1]), bool)
+    for i, t in enumerate(sorted(thresholds)):
+        masks[i+1] = (img > t)
+    masks[0] = ~masks[1]
+    for i in range(1, len(masks) - 1):
+        masks[i] = masks[i] ^ masks[i+1]
+    return masks
+
+
 def otsu_method(hist):
     """
     Optimized implementation of Otsu's Method algorithm.
