@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def main():
+def main(path='data/soil.jpg'):
     L = 256  # number of levels
     M = 32  # number of bins for bin-grouping normalisation
 
     N = L // M
     # Load original image
-    img = cv2.imread('data/soil.jpg', 0)  # read image in as grayscale
+    img = cv2.imread(path, 0)  # read image in as grayscale
 
     # Blur image
     img = cv2.GaussianBlur(img, (5, 5), 0)
