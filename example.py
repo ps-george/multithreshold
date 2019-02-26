@@ -13,7 +13,7 @@ def main():
     img = cv2.imread('data/soil.jpg', 0)  # read image in as grayscale
 
     # Blur image
-    img = cv2.GaussianBlur(img, (7, 7), 0)
+    img = cv2.GaussianBlur(img, (5, 5), 0)
 
     # Calculate histogram
     hist = cv2.calcHist(
@@ -55,8 +55,8 @@ def main():
     img_5 = img_3.copy()
 
     def show_thresholds(src_img, dst_img, thresholds):
-        colors = [(255, 0, 0), (255, 128, 0), (255, 255, 0), (0, 128, 0), (0, 255, 128),
-                  (0, 255, 255), (0, 128, 255), (0, 0, 255), (128, 0, 255), (255, 0, 255), (255, 0, 127)]
+        colors = [(255, 0, 0), (255, 128, 0), (255, 255, 0), (0, 128, 0), (0, 204, 102),
+                  (51, 255, 255), (0, 128, 255), (0, 0, 255), (128, 0, 255), (255, 0, 255), (255, 0, 127)]
         for i, t in enumerate(sorted(thresholds)):
             retval, mask = cv2.threshold(src_img, t, 255, cv2.THRESH_BINARY)
             mask_ind = (mask > 0)
