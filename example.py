@@ -38,7 +38,7 @@ def main():
     thresholds = otsu.threshold_valley_regions(hist, valleys, N)
 
     otsu_threshold, _ = otsu.otsu_method(hist)
-    thresholds2 = otsu.modified_TSMO(hist, M=M, L=L, maximum=4)
+    thresholds2 = otsu.modified_TSMO(hist, M=M, L=L)
     print('Otsu threshold: {}\nStep-by-step MTSMO: {}\nMTSMO: {}'.format(
         otsu_threshold, thresholds, thresholds2))
 
