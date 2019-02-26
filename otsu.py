@@ -52,7 +52,7 @@ def otsu_method(hist):
 
 
 def otsu(hist):
-    pos, val = otsu_method
+    pos, val = otsu_method(hist)
     return pos
 
 
