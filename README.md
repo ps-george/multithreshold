@@ -14,4 +14,4 @@ International Journal of Innovative Computing, Information and Control, 7(10), 5
 ### Selecting top X threshold values from output (1, 3, auto)
 ![Different Levels](images/different_levels.png)
 ### Threshold values displayed on histogram, black line is value from vanilla Otsu's method
-![Thresh Values on Histogram](images/threshold_value_histogram.png)
+![Thresh Values on Histogram](images/threshold_values_histogram.png)
