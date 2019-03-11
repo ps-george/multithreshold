@@ -2,7 +2,10 @@ import numpy as np
 
 
 def multithreshold(img, thresholds):
-    """Multithreshold a single-channel image. Returns boolean mask indices."""
+    """Multithreshold a single-channel image using provided thresholds.
+
+    Returns boolean mask indices.
+    """
     masks = np.zeros((len(thresholds) + 1, img.shape[0], img.shape[1]), bool)
     for i, t in enumerate(sorted(thresholds)):
         masks[i+1] = (img > t)
@@ -108,7 +111,11 @@ def valley_estimation(hist, M=32, L=256):
 
 
 def threshold_valley_regions(hist, valleys, N):
-    """Perform Otsu's method over estimated valley regions."""
+    """Perform Otsu's method over estimated valley regions.
+
+    Returns:
+        list: thresholds ordered by greatest intra-class variance.
+    """
     thresholds = []
     for valley in valleys:
         start_pos = (valley * N) - N
@@ -128,6 +135,12 @@ def modified_TSMO(hist, M=32, L=256):
     Huang, D. Y., Lin, T. W., & Hu, W. C. (2011).
     Automatic multilevel thresholding based on two-stage Otsu’s method with cluster determination by valley estimation.
     International Journal of Innovative Computing, Information and Control, 7(10), 56315644.
+
+    Args:
+       hist: Histogram of grayscale image.
+
+    Returns:
+        list: List of detected thresholds ordered by greatest intra-class variance.
     """
 
     N = L // M
